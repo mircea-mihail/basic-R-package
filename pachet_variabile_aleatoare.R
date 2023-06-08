@@ -93,20 +93,43 @@ obtine_constanta_normalizare(f, 1, 2) * integrate(f, 1, 2)$value
 
 #fucntie de masa:
 
-n <- -10:20
-mass_f <- dbinom(x=n, size=10, prob=1, log = FALSE)
+n <- -2:4
+mass_f <- dbinom(x=n, size=2, prob=1/4, log = FALSE)
 plot(n, mass_f, type='h')
-
+sum(mass_f)
 
 n <- 0:200
 functie_de_masa <- function(n){
-  mass_f <- dbinom(n, 200, .3, log = FALSE)
+  mass_f <- dbinom(n, 200, .5, log = FALSE)
   plot(n, mass_f, type='h')
   mass_f
 }
 
 f_masa <- functie_de_masa(n)
 sum(f_masa)
+
+# ========================================================== Cerinta 4 ==========================================================
+
+#   4) Calculul mediei, dispersiei și a momentelor inițiale și centrate pȃnă la ordinul 4(dacă
+# există). Atunci cȃnd unul dintre momente nu există, se va afișa un mesaj corespunzător
+#`către utilizator.
+
+x <- c(1, 2, 3)
+
+# media aritmetica
+media <- mean(x)
+# dispersia, sau varianta, se obtine adunand diferenta dintre fiecare valoare
+# si medie la patrat. Suma respectiva se imparte la numarul de valori - 1
+# (ajustarea lui Bessel, care are drept scop corectarea unui bias)
+dispersia <- var(x)
+
+# media este chiar primul moment 
+# acest prim moment totusi poate coincide cu multe alte dataseturi
+# un al doilea moment este suma patratelor lui x supra n (nr de valori din x)
+momentul_2 <- sum(x^2) / length(x)
+momentul_3 <- sum(x^3) / length(x)
+momentul_4 <- sum(x^4) / length(x)
+# cu cat varianta e mai mare cu atat momentele 2, 3, 4 vor fi mai mari
 
 
 
