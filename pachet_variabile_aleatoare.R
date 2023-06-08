@@ -1,4 +1,6 @@
 
+# ========================================================== Cerinta 2 ==========================================================
+
 #   2. Fiind dată o funcție f , introdusă de utilizator, determinarea unei constante de
 # normalizare k(cu precizarea dacă această constantă duce la o funcție de masă sau la o
 # densitate de probabilitate). Ȋn cazul ȋn care o asemenea constantă nu există, afișarea
@@ -70,7 +72,6 @@ obtine_constanta_normalizare <- function(f, min = 0, max = 0){
                               }
                               return(NA)
                           })
-    # rezultatul integrarii este elementul de pe pozitia 1 din lista rezultata din integrate()
     # ne intereseaza constanta care, atunci cand este inmultita cu integrala, sa intoarca 1: 
     # k * integrala = 1
     # k = 1/integrala
@@ -81,3 +82,31 @@ obtine_constanta_normalizare <- function(f, min = 0, max = 0){
 obtine_constanta_normalizare(f, 0, 3)
 
 obtine_constanta_normalizare(f, 1, 2) * integrate(f, 1, 2)$value
+
+# ========================================================== Cerinta 3 ==========================================================
+
+#     3) Reprezentarea grafică a densității de probabilitate/funcției de masă și a funcției de
+# repartiție pentru diferite valori ale parametrilor repartiției. Ȋn cazul ȋn care funcția de
+# repartiție nu este dată ȋntr-o formă explicită(ex. repartiția normală) se acceptă
+# reprezentarea grafică a unei aproximări a acesteia.
+
+
+#fucntie de masa:
+
+n <- -10:20
+mass_f <- dbinom(x=n, size=10, prob=1, log = FALSE)
+plot(n, mass_f, type='h')
+
+
+n <- 0:200
+functie_de_masa <- function(n){
+  mass_f <- dbinom(n, 200, .3, log = FALSE)
+  plot(n, mass_f, type='h')
+  mass_f
+}
+
+f_masa <- functie_de_masa(n)
+sum(f_masa)
+
+
+
