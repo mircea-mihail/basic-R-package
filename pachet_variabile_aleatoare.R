@@ -6,6 +6,9 @@
 # densitate de probabilitate). Ȋn cazul ȋn care o asemenea constantă nu există, afișarea
 # unui mesaj corespunzător către utilizator.
 
+# functia de masa -> pot stoca in lista
+# =============================================================== Cum ar putea sa duca la o functie de masa sau densitate?
+# =============================================================== E ok daca iau min/max sau ar trebui de la -inf la inf?
 
 #     Constanta de normalizare este o constanta care, atunci cand este inmultita cu rezultatul integrarii
 # functiei alese, intoarce valoare 1. Este utila aceasta constanta deoarece in statistica suma tuturor
@@ -36,6 +39,12 @@ print(result)
 
 integrate(f, 0, 2)
 
+# ok cu min si max
+# undeva cand am relatia cu utilizatorul sa fie clar ca o constanta duce la 
+
+# daca functia e continua obtin o densitate
+# pot da un cat sa zic daca e densitate
+# nu orice functie poate fi densitate: definita in R cu val in R, sa 
 obtine_constanta_normalizare <- function(f, min = 0, max = 0){
     # Aceasta metoda de obtinere a constantei de normalizare poate ajunge la rezultatul corect, 
     # fie ca functia f are valori discrete (functie de masa) ( acestea fiind reprezentate de felul ifelse(x < 1, 1, 2)
@@ -90,6 +99,22 @@ obtine_constanta_normalizare(f, 1, 2) * integrate(f, 1, 2)$value
 # repartiție nu este dată ȋntr-o formă explicită(ex. repartiția normală) se acceptă
 # reprezentarea grafică a unei aproximări a acesteia.
 
+# =============================================================== Nu prea inteleg cerinta daca ar putea clarifica
+# =============================================================== Pur si simplu reprezint grafic mai multe repartitii? 
+# =============================================================== Sau o functie data de user??
+# =============================================================== diferite valori date de user?
+
+#am o repartitie:  vreau sa vad functia de masa, repartitia pt diferite valori ale parametriilor
+#cum se modifica forma functiei de masa, repartitie in functie de diferiti parametrii
+# functia de repartitie e o integrala care nu se poate calcula -> nu reprezint grafic fix integrala -> 
+
+#trebuie sa ii arat niste grafice legate de repartitii
+# masa si repartitie pt geometrica: 
+  # sa pot apela functia mea astfel incat sa arate asta
+
+#poate cer f de densitate pt o densitate construita aici cu k
+  #sa apelez cumva f3 pt a printa masa si repartitia asta
+
 
 #fucntie de masa:
 
@@ -114,22 +139,49 @@ sum(f_masa)
 # există). Atunci cȃnd unul dintre momente nu există, se va afișa un mesaj corespunzător
 #`către utilizator.
 
-x <- c(1, 2, 3)
+# =============================================================== Cum ar putea sa nu existe
+# exista repartitii care nu au medie -> nu vor avea si momente
+# pot avea integrale sau sume -> daca integrala e divergenta sa zica nu exista etc..
 
-# media aritmetica
-media <- mean(x)
-# dispersia, sau varianta, se obtine adunand diferenta dintre fiecare valoare
-# si medie la patrat. Suma respectiva se imparte la numarul de valori - 1
-# (ajustarea lui Bessel, care are drept scop corectarea unui bias)
-dispersia <- var(x)
+x <- c(1, 2, 3, 10)
 
-# media este chiar primul moment 
-# acest prim moment totusi poate coincide cu multe alte dataseturi
-# un al doilea moment este suma patratelor lui x supra n (nr de valori din x)
-momentul_2 <- sum(x^2) / length(x)
-momentul_3 <- sum(x^3) / length(x)
-momentul_4 <- sum(x^4) / length(x)
-# cu cat varianta e mai mare cu atat momentele 2, 3, 4 vor fi mai mari
+medie_dispersie_momente <- function(x){
+  # media aritmetica
+  media <- mean(x)
+  # dispersia, sau varianta, se obtine adunand diferenta dintre fiecare valoare
+  # si medie la patrat. Suma respectiva se imparte la numarul de valori - 1
+  # (ajustarea lui Bessel, care are drept scop corectarea unui bias)
+  dispersia <- var(x)
+  
+  # media este chiar primul moment 
+  # acest prim moment totusi poate coincide cu multe alte dataseturi
+  # un al doilea moment este suma patratelor lui x supra n (nr de valori din x)
+  momentul_2 <- sum(x^2) / length(x)
+  momentul_3 <- sum(x^3) / length(x)
+  momentul_4 <- sum(x^4) / length(x)
+  # cu cat varianta e mai mare cu atat momentele 2, 3, 4 vor fi mai mari
+  
+  # scopul momentelor centrate este sa elimine la fiecare pas momentul precedent 
+  
+  momentul_2_centrat <- sum((x - media)^2) / length(x)
+  momentul_3_centrat <- sum((x - media)^3) / length(x)
+  momentul_4_centrat <- sum((x - media)^4) / length(x)
 
+  return(list(media = media, 
+              dispersia = dispersia, 
+              
+              momentul_1 = media,
+              momentul_2 = momentul_2,
+              momentul_3 = momentul_3,
+              momentul_4 = momentul_4,
+              
+              momentul_2_centrat = momentul_2_centrat,
+              momentul_3_centrat = momentul_3_centrat,
+              momentul_4_centrat = momentul_4_centrat
+              
+              ))
+}
+
+medie_dispersie_momente(x)
 
 
