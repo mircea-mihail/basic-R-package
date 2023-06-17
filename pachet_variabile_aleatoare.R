@@ -76,6 +76,7 @@ obtine_constanta_normalizare <- function(f, min = 0, max = 0){
             cat("Functia introdusa nu este valida")
             return(NA);
         }
+        cat("S-a creat cu succes o constanta de normalizare pentru o functie de masa\n")
         return(1/sum)
     }
     
@@ -119,6 +120,7 @@ obtine_constanta_normalizare <- function(f, min = 0, max = 0){
         if(is.na(rez_integrarii) == TRUE)
         return(NA)
     }
+    cat("S-a creat cu succes o constanta de normalizare pentru o functie de densitate\n")
     return(1 / rez_integrarii$value)
 }
 
