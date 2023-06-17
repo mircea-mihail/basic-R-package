@@ -18,7 +18,7 @@
 
 f <- function(x){
     # functie care intoarce 1 pt valori intre 0 si 1, si a^2 pentru valori mai mari decat 1 
-    ifelse(x < 1, 1, 2)
+    x^2
 }
 
 inf_f <- function(x){
@@ -26,18 +26,26 @@ inf_f <- function(x){
     1 / (x - 1)
 }
 
+const * integrate(f, 0, 2)$value
+
 result <- tryCatch(
-    integrate(inf_f, lower = 0, upper = 1),
-    error = function(err) {
-    # Custom response when the integration results in an error
-      message("Integration resulted in an error: ", err$message)
-      # You can choose to return a specific value or handle the error in a different way
-      return(NA)
-    }
+      integrate(inf_f, lower = 0, upper = 1),
+      error = function(err) {
+          # Custom response when the integration results in an error
+          #message("Integration resulted in an error: ", err$message)
+          # You can choose to return a specific value or handle the error in a different way
+          cat("salut sunt mircea")
+          return(NA)
+      }
 )
 print(result)
 
 integrate(f, 0, 2)
+
+a <- c(1.4, 2.1, 4.83, 7)
+a = 1/sum(a) * a
+a = NA
+typeof(a)
 
 # ok cu min si max
 # undeva cand am relatia cu utilizatorul sa fie clar ca o constanta duce la 
@@ -50,6 +58,27 @@ obtine_constanta_normalizare <- function(f, min = 0, max = 0){
     # fie ca functia f are valori discrete (functie de masa) ( acestea fiind reprezentate de felul ifelse(x < 1, 1, 2)
     # sau valori continue (functie de densitate) (x^2
     # min si max reprezinta intervalul pe care functia ia valori diferite de 0
+    
+    # verific daca f e functie continua sau concreta
+    if(typeof(f) != "function" && typeof(f) != "builtin" && typeof(f) != "closure"){
+        if(min != max){
+            cat("Pentru functiile de masa nu se introduc limite.\nPentru a obtine o constanta de normalizare pe intervalul dorit introduceti alta functie de masa")
+            return(NA)
+        }
+        tryCatch(
+            sum <- sum(f),
+            error = function(err){
+                return(NA)
+            }
+        )
+    
+        if(is.na(sum)){
+            cat("Functia introdusa nu este valida")
+            return(NA);
+        }
+        return(1/sum)
+    }
+    
     if(min == max){
         if(min == 0){
             cat("Nu ati introdus limite!\n")
@@ -64,31 +93,43 @@ obtine_constanta_normalizare <- function(f, min = 0, max = 0){
     if(min > max){
         cat("Limita inferioara este mai mare decat cea superioara!\n")
         cat("Introduceti un interval valid, in care limitele pe care functia ia valori au sens.\n")
-        return(NA);
+        return(NA)
     }
     # integrala poate tinde la infinit ceea ce face ca functia integrate sa afiseze o eroare. 
     # ce imi doresc este sa prind acea eroare si sa o tratez, ceea ce fac cu tryCatch():
     rez_integrarii <- tryCatch(
-                          integrate(f, min, max), 
-                          error = function(err){
-                              # daca integrala tinde la infinit, mesajul erorii este cel de mai jos
-                              if(err$message == "non-finite function value"){
-                                  cat("Functia data tinde la infinit.\nNu se poate gasi o constanta de normalizare pentru ea.\n")
-                              }
-                              else{
-                                  cat("O eroare neasteptata a avut loc la integrare:\n")
-                                  cat(err$message);
-                              }
-                              return(NA)
-                          })
+                                  integrate(f, min, max), 
+                                  error = function(err){
+                                      # daca integrala tinde la infinit, mesajul erorii este cel de mai jos
+                                      if(err$message == "non-finite function value"){
+                                          cat("Functia data tinde la infinit.\nNu se poate gasi o constanta de normalizare pentru ea.\n")
+                                      }
+                                      else{
+                                          cat("O eroare neasteptata a avut loc la integrare:\n")
+                                          cat(err$message)
+                                      }
+                                      return(NA)
+                                  }
+                              )
     # ne intereseaza constanta care, atunci cand este inmultita cu integrala, sa intoarca 1: 
     # k * integrala = 1
     # k = 1/integrala
     # folosesc $value deoarece vreau valoarea stocata in rezultatul integrarii
+    if(typeof(rez_integrarii) == "logical"){
+        if(is.na(rez_integrarii) == TRUE)
+        return(NA)
+    }
     return(1 / rez_integrarii$value)
 }
 
-obtine_constanta_normalizare(f, 0, 3)
+const = obtine_constanta_normalizare(f, 0, 3)
+const * integrate(f, 0, 3)$value
+
+a <- c(1, 2)
+const1 = obtine_constanta_normalizare(a)
+const1 * sum(a)
+
+inf_const = obtine_constanta_normalizare(inf_f, 0, 1)
 
 obtine_constanta_normalizare(f, 1, 2) * integrate(f, 1, 2)$value
 
