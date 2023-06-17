@@ -185,7 +185,7 @@ obtine_constanta_normalizare(f, 1, 2) * integrate(f, 1, 2)$value
   # sa pot apela functia mea astfel incat sa arate asta
 
 #poate cer f de densitate pt o densitate construita aici cu k
-  #sa apelez cumva f3 pt a printa masa si repartitia asta
+  #sa apelez cumva f3 pt a printa masa si repartitia asta 
 
 
 #fucntie de masa:
@@ -204,6 +204,61 @@ functie_de_masa <- function(n){
 
 f_masa <- functie_de_masa(n)
 sum(f_masa)
+
+#cu indexul aleg functia pe care o reprezint, cu scale aleg rezolutia ( nr de incercari de ex )
+reprezentare_grafica <- function(index_f=0, scale_f = 100, param_1 = -1, param_2 = -1){
+    #daca utilizatorul alege 1 inseamna ca vrea repartitia binomiala  
+    if(index_f == 0){
+        cat( "utilizare:\n1 - functia binomiala\n2 - \n")
+        return()
+    }
+    if(index_f == 1){
+        par(mfrow=c(1,1))
+        
+        if(param_1 == -1 || param_2 == -1){
+            par(mfrow=c(2,2))
+          
+            cat("Pentru o afisare mai concreta introduceti valori pentru ambii parametrii cat si pentru scala")
+            plot(0:scale_f, dbinom(0:scale_f, 0.1*scale_f, 0.5), col="#1C4700", type="l", lwd="3", 
+                ylab="probabilitatea", xlab="numarul de incercari", main="Binomiala cu numarul de incercari variabil")
+            lines(0:scale_f, dbinom(0:scale_f, 0.3*scale_f, 0.5), col="#3F9F00", type="l", lwd="3")
+            lines(0:scale_f, dbinom(0:scale_f, 0.5*scale_f, 0.5), col="#5be600", type="l", lwd="3")
+            lines(0:scale_f, dbinom(0:scale_f, 0.7*scale_f, 0.5), col="#89FF3C", type="l", lwd="3")
+            lines(0:scale_f, dbinom(0:scale_f, 0.9*scale_f, 0.5), col="#C0FF98", type="l", lwd="3")
+            
+            plot(0:scale_f, dbinom(0:scale_f, scale_f, 0.1), col="#d698ff", type="l", lwd="3",
+                 ylab="probabilitatea", xlab="numarul de incercari", main="Binomiala cu numarul de incercari variabil")
+            lines(0:scale_f, dbinom(0:scale_f, scale_f, 0.3), col="#b23cff", type="l", lwd="3")
+            lines(0:scale_f, dbinom(0:scale_f, scale_f, 0.5), col="#8b00e6", type="l", lwd="3")
+            lines(0:scale_f, dbinom(0:scale_f, scale_f, 0.7), col="#60009f", type="l", lwd="3")
+            lines(0:scale_f, dbinom(0:scale_f, scale_f, 0.9), col="#2b0047", type="l", lwd="3")
+            
+            plot(0:scale_f, pbinom(0:scale_f, 0.1*scale_f, 0.5), col="#1C4700", type="l", lwd="3",
+                 ylab="probabilitatea", xlab="numarul de incercari", main="Binomiala cu numarul de incercari variabil")
+            lines(0:scale_f, pbinom(0:scale_f, 0.3*scale_f, 0.5), col="#3F9F00", type="l", lwd="3")
+            lines(0:scale_f, pbinom(0:scale_f, 0.5*scale_f, 0.5), col="#5be600", type="l", lwd="3")
+            lines(0:scale_f, pbinom(0:scale_f, 0.7*scale_f, 0.5), col="#89FF3C", type="l", lwd="3")
+            lines(0:scale_f, pbinom(0:scale_f, 0.9*scale_f, 0.5), col="#C0FF98", type="l", lwd="3")
+            
+            plot(0:scale_f, pbinom(0:scale_f, scale_f, 0.1), col="#d698ff", type="l", lwd="3",
+                 ylab="probabilitatea", xlab="numarul de incercari", main="Binomiala cu numarul de incercari variabil")
+            lines(0:scale_f, pbinom(0:scale_f, scale_f, 0.3), col="#b23cff", type="l", lwd="3")
+            lines(0:scale_f, pbinom(0:scale_f, scale_f, 0.5), col="#8b00e6", type="l", lwd="3")
+            lines(0:scale_f, pbinom(0:scale_f, scale_f, 0.7), col="#60009f", type="l", lwd="3")
+            lines(0:scale_f, pbinom(0:scale_f, scale_f, 0.9), col="#2b0047", type="l", lwd="3")
+            return()
+        }
+      
+        plot(0:scale_f, dbinom(0:scale_f, param_1, param_2), col="#1C4700", type="l", lwd="3", 
+            ylab="probabilitatea", xlab="numarul de incercari", main="Binomiala cu numarul de incercari variabil")
+        return()
+    }
+}
+reprezentare_grafica(1)
+
+
+
+
 
 # ========================================================== Cerinta 4 ==========================================================
 
