@@ -48,7 +48,52 @@ a = NA
 typeof(a)
 
 # ok cu min si max
-# undeva cand am relatia cu utilizatorul sa fie clar ca o constanta duce la 
+# undeva cand am relatia cu utilizatorul sa fie clar ca o constanta duce la
+
+integreaza_finit <- function(f, min, max){
+    rez_integrarii <- tryCatch(
+        integrate(f, min, max), 
+        error = function(err){
+            # daca integrala tinde la infinit, mesajul erorii este cel de mai jos
+            if(err$message == "non-finite function value"){
+                cat("Functia data tinde la infinit.\nNu se poate gasi o constanta de normalizare pentru ea.\n")
+            }
+            else{
+                cat("O eroare neasteptata a avut loc la integrare:\n")
+                cat(err$message)
+            }
+            return(NA)
+        }
+    )
+}
+
+#daca e functie discreta: 
+#     - are intrari invalide si intoarce 1
+#     - are intrari valide si intoarce 2
+#daca e functie continua:
+#     - intoarce 0
+verifica_functie_discreta <- function(x, min, max){
+    if(typeof(x) != "function" && typeof(x) != "builtin" && typeof(x) != "closure"){
+        if(min != max){
+            cat("Pentru functiile de masa nu se introduc limite.\n
+                 Pentru a obtine rezultatele functiei pe un interval specific introduceti alta functie discreta ce contine acel interval.\n")
+            return(1)
+        }
+        tryCatch(
+            sum <- sum(x),
+            error = function(err){
+                return(NA)
+            }
+        )
+        
+        if(is.na(sum)){
+            cat("Functia introdusa nu este valida")
+            return(1);
+        }
+        return(2)
+    }
+    return(0)
+}
 
 # daca functia e continua obtin o densitate
 # pot da un cat sa zic daca e densitate
@@ -60,24 +105,15 @@ obtine_constanta_normalizare <- function(f, min = 0, max = 0){
     # min si max reprezinta intervalul pe care functia ia valori diferite de 0
     
     # verific daca f e functie continua sau concreta
-    if(typeof(f) != "function" && typeof(f) != "builtin" && typeof(f) != "closure"){
-        if(min != max){
-            cat("Pentru functiile de masa nu se introduc limite.\nPentru a obtine o constanta de normalizare pe intervalul dorit introduceti alta functie de masa")
-            return(NA)
-        }
-        tryCatch(
-            sum <- sum(f),
-            error = function(err){
-                return(NA)
-            }
-        )
+    status_functie <- verifica_functie_discreta(f, min, max);
     
-        if(is.na(sum)){
-            cat("Functia introdusa nu este valida")
-            return(NA);
-        }
+    if(status_functie == 2){
+        sum <- sum(f)
         cat("S-a creat cu succes o constanta de normalizare pentru o functie de masa\n")
         return(1/sum)
+    }
+    if(status_functie == 1){
+        return(NA)
     }
     
     if(min == max){
@@ -98,20 +134,7 @@ obtine_constanta_normalizare <- function(f, min = 0, max = 0){
     }
     # integrala poate tinde la infinit ceea ce face ca functia integrate sa afiseze o eroare. 
     # ce imi doresc este sa prind acea eroare si sa o tratez, ceea ce fac cu tryCatch():
-    rez_integrarii <- tryCatch(
-                                  integrate(f, min, max), 
-                                  error = function(err){
-                                      # daca integrala tinde la infinit, mesajul erorii este cel de mai jos
-                                      if(err$message == "non-finite function value"){
-                                          cat("Functia data tinde la infinit.\nNu se poate gasi o constanta de normalizare pentru ea.\n")
-                                      }
-                                      else{
-                                          cat("O eroare neasteptata a avut loc la integrare:\n")
-                                          cat(err$message)
-                                      }
-                                      return(NA)
-                                  }
-                              )
+    rez_integrarii <- integreaza_finit(f, min, max)
     # ne intereseaza constanta care, atunci cand este inmultita cu integrala, sa intoarca 1: 
     # k * integrala = 1
     # k = 1/integrala
@@ -188,43 +211,50 @@ sum(f_masa)
 
 x <- c(1, 2, 3, 10)
 
-medie_dispersie_momente <- function(x){
-  # media aritmetica
-  media <- mean(x)
-  # dispersia, sau varianta, se obtine adunand diferenta dintre fiecare valoare
-  # si medie la patrat. Suma respectiva se imparte la numarul de valori - 1
-  # (ajustarea lui Bessel, care are drept scop corectarea unui bias)
-  dispersia <- var(x)
-  
-  # media este chiar primul moment 
-  # acest prim moment totusi poate coincide cu multe alte dataseturi
-  # un al doilea moment este suma patratelor lui x supra n (nr de valori din x)
-  momentul_2 <- sum(x^2) / length(x)
-  momentul_3 <- sum(x^3) / length(x)
-  momentul_4 <- sum(x^4) / length(x)
-  # cu cat varianta e mai mare cu atat momentele 2, 3, 4 vor fi mai mari
-  
-  # scopul momentelor centrate este sa elimine la fiecare pas momentul precedent 
-  
-  momentul_2_centrat <- sum((x - media)^2) / length(x)
-  momentul_3_centrat <- sum((x - media)^3) / length(x)
-  momentul_4_centrat <- sum((x - media)^4) / length(x)
-
-  return(list(media = media, 
-              dispersia = dispersia, 
-              
-              momentul_1 = media,
-              momentul_2 = momentul_2,
-              momentul_3 = momentul_3,
-              momentul_4 = momentul_4,
-              
-              momentul_2_centrat = momentul_2_centrat,
-              momentul_3_centrat = momentul_3_centrat,
-              momentul_4_centrat = momentul_4_centrat
-              
-              ))
+medie_dispersie_momente <- function(x, min = 0, max = 0){
+    #daca f este o functie discreta 
+    
+      
+        # media aritmetica
+        media <- mean(x)
+        # dispersia, sau varianta, se obtine adunand diferenta dintre fiecare valoare
+        # si medie la patrat. Suma respectiva se imparte la numarul de valori - 1
+        # (ajustarea lui Bessel, care are drept scop corectarea unui bias)
+        dispersia <- var(x)
+        
+        # media este chiar primul moment 
+        # acest prim moment totusi poate coincide cu multe alte dataseturi
+        # un al doilea moment este suma patratelor lui x supra n (nr de valori din x)
+        momentul_2 <- sum(x^2) / length(x)
+        momentul_3 <- sum(x^3) / length(x)
+        momentul_4 <- sum(x^4) / length(x)
+        # cu cat varianta e mai mare cu atat momentele 2, 3, 4 vor fi mai mari
+        
+        # scopul momentelor centrate este sa elimine la fiecare pas momentul precedent 
+        
+        momentul_2_centrat <- sum((x - media)^2) / length(x)
+        momentul_3_centrat <- sum((x - media)^3) / length(x)
+        momentul_4_centrat <- sum((x - media)^4) / length(x)
+      
+        return(list(media = media, 
+                    dispersia = dispersia, 
+                    
+                    momentul_1 = media,
+                    momentul_2 = momentul_2,
+                    momentul_3 = momentul_3,
+                    momentul_4 = momentul_4,
+                    
+                    momentul_2_centrat = momentul_2_centrat,
+                    momentul_3_centrat = momentul_3_centrat,
+                    momentul_4_centrat = momentul_4_centrat
+                    
+                    ))
+    }
+    #daca nu e discreta nu intra pe if si daca este iese din functie la return 
+    
+    media <- integreaza_finit(x, min, max)
 }
 
-medie_dispersie_momente(x)
+a <- medie_dispersie_momente(x)
 
 
