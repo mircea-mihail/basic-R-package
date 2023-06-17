@@ -206,55 +206,152 @@ f_masa <- functie_de_masa(n)
 sum(f_masa)
 
 #cu indexul aleg functia pe care o reprezint, cu scale aleg rezolutia ( nr de incercari de ex )
+#functia reprezinta grafic diferitele distributii si functiile lor de densitate/repartitie in functie de inputul userului
+#1-binom
+#2-norm
+#3-geom
+#
+#
+#
+#
+#daca nu se dau alte inputuri se fac 4 plotari generice cu un parametru schimbator
+#daca se dau inputuri pt fiecare parametru se fac doar 2 plotari pt cele 2 functii cerute(Dens si rep)
 reprezentare_grafica <- function(index_f=0, scale_f = 100, param_1 = -1, param_2 = -1){
-    #daca utilizatorul alege 1 inseamna ca vrea repartitia binomiala  
     if(index_f == 0){
         cat( "utilizare:\n1 - functia binomiala\n2 - \n")
         return()
     }
+    #distributia binomiala -> pot fi modificate numarul de incercari si probabilitatea de success
     if(index_f == 1){
-        par(mfrow=c(1,1))
-        
         if(param_1 == -1 || param_2 == -1){
             par(mfrow=c(2,2))
           
             cat("Pentru o afisare mai concreta introduceti valori pentru ambii parametrii cat si pentru scala")
             plot(0:scale_f, dbinom(0:scale_f, 0.1*scale_f, 0.5), col="#1C4700", type="l", lwd="3", 
-                ylab="probabilitatea", xlab="numarul de incercari", main="Binomiala cu numarul de incercari variabil")
-            lines(0:scale_f, dbinom(0:scale_f, 0.3*scale_f, 0.5), col="#3F9F00", type="l", lwd="3")
-            lines(0:scale_f, dbinom(0:scale_f, 0.5*scale_f, 0.5), col="#5be600", type="l", lwd="3")
-            lines(0:scale_f, dbinom(0:scale_f, 0.7*scale_f, 0.5), col="#89FF3C", type="l", lwd="3")
-            lines(0:scale_f, dbinom(0:scale_f, 0.9*scale_f, 0.5), col="#C0FF98", type="l", lwd="3")
+                ylab="probabilitatea", xlab="numarul de incercari", main="Densitatea binomialei cu numarul de incercari variabil")
+            lines(0:scale_f, dbinom(0:scale_f, 0.4*scale_f, 0.5), col="#3F9F00", type="l", lwd="3")
+            lines(0:scale_f, dbinom(0:scale_f, 0.7*scale_f, 0.5), col="#5be600", type="l", lwd="3")
+            lines(0:scale_f, dbinom(0:scale_f, 1*scale_f, 0.5), col="#89FF3C", type="l", lwd="3")
+            lines(0:scale_f, dbinom(0:scale_f, 1.3*scale_f, 0.5), col="#C0FF98", type="l", lwd="3")
             
             plot(0:scale_f, dbinom(0:scale_f, scale_f, 0.1), col="#d698ff", type="l", lwd="3",
-                 ylab="probabilitatea", xlab="numarul de incercari", main="Binomiala cu numarul de incercari variabil")
+                 ylab="probabilitatea", xlab="numarul de incercari", main="Densitatea binomialei cu probabilitatea de success variabila")
             lines(0:scale_f, dbinom(0:scale_f, scale_f, 0.3), col="#b23cff", type="l", lwd="3")
             lines(0:scale_f, dbinom(0:scale_f, scale_f, 0.5), col="#8b00e6", type="l", lwd="3")
             lines(0:scale_f, dbinom(0:scale_f, scale_f, 0.7), col="#60009f", type="l", lwd="3")
             lines(0:scale_f, dbinom(0:scale_f, scale_f, 0.9), col="#2b0047", type="l", lwd="3")
             
             plot(0:scale_f, pbinom(0:scale_f, 0.1*scale_f, 0.5), col="#1C4700", type="l", lwd="3",
-                 ylab="probabilitatea", xlab="numarul de incercari", main="Binomiala cu numarul de incercari variabil")
-            lines(0:scale_f, pbinom(0:scale_f, 0.3*scale_f, 0.5), col="#3F9F00", type="l", lwd="3")
-            lines(0:scale_f, pbinom(0:scale_f, 0.5*scale_f, 0.5), col="#5be600", type="l", lwd="3")
-            lines(0:scale_f, pbinom(0:scale_f, 0.7*scale_f, 0.5), col="#89FF3C", type="l", lwd="3")
-            lines(0:scale_f, pbinom(0:scale_f, 0.9*scale_f, 0.5), col="#C0FF98", type="l", lwd="3")
+                 ylab="probabilitatea", xlab="numarul de incercari", main="Repartitia binomialei cu numarul de incercari variabil")
+            lines(0:scale_f, pbinom(0:scale_f, 0.4*scale_f, 0.5), col="#3F9F00", type="l", lwd="3")
+            lines(0:scale_f, pbinom(0:scale_f, 0.7*scale_f, 0.5), col="#5be600", type="l", lwd="3")
+            lines(0:scale_f, pbinom(0:scale_f, 1*scale_f, 0.5), col="#89FF3C", type="l", lwd="3")
+            lines(0:scale_f, pbinom(0:scale_f, 1.3*scale_f, 0.5), col="#C0FF98", type="l", lwd="3")
             
             plot(0:scale_f, pbinom(0:scale_f, scale_f, 0.1), col="#d698ff", type="l", lwd="3",
-                 ylab="probabilitatea", xlab="numarul de incercari", main="Binomiala cu numarul de incercari variabil")
+                 ylab="probabilitatea", xlab="numarul de incercari", main="Repartitia binomialei cu probabilitatea de success variabila")
             lines(0:scale_f, pbinom(0:scale_f, scale_f, 0.3), col="#b23cff", type="l", lwd="3")
             lines(0:scale_f, pbinom(0:scale_f, scale_f, 0.5), col="#8b00e6", type="l", lwd="3")
             lines(0:scale_f, pbinom(0:scale_f, scale_f, 0.7), col="#60009f", type="l", lwd="3")
             lines(0:scale_f, pbinom(0:scale_f, scale_f, 0.9), col="#2b0047", type="l", lwd="3")
             return()
         }
+        par(mfrow=c(1,2))
       
-        plot(0:scale_f, dbinom(0:scale_f, param_1, param_2), col="#1C4700", type="l", lwd="3", 
-            ylab="probabilitatea", xlab="numarul de incercari", main="Binomiala cu numarul de incercari variabil")
+        plot(0:scale_f, dbinom(0:scale_f, param_1, param_2), col="#5be600", type="l", lwd="3", 
+            ylab="probabilitatea", xlab="numarul de incercari", main="Binomiala cu valorile alese")
+        plot(0:scale_f, pbinom(0:scale_f, scale_f, 0.1), col="#8b00e6", type="l", lwd="3",
+             ylab="probabilitatea", xlab="numarul de incercari", main="Repartitia binomialei cu valorile alese")
+        
+        return()
+    }
+
+    #distributia normala -> pot fi modificate media si deviatia standard
+    if(index_f == 2){
+        if(param_1 == -1 || param_2 == -1){
+            par(mfrow=c(2,2))
+            
+            cat("Pentru o afisare mai concreta introduceti valori pentru ambii parametrii cat si pentru scala")
+            plot(0:scale_f, dnorm(0:scale_f, 0.3*scale_f, 0.1*scale_f), col="#1C4700", type="l", lwd="3", 
+                 ylab="probabilitatea", xlab="valoarea variabilei aleatoare", main="Densitatea normalei cu media variabila")
+            lines(0:scale_f, dnorm(0:scale_f, 0.4*scale_f, 0.1*scale_f), col="#3F9F00", type="l", lwd="3")
+            lines(0:scale_f, dnorm(0:scale_f, 0.5*scale_f, 0.1*scale_f), col="#5be600", type="l", lwd="3")
+            lines(0:scale_f, dnorm(0:scale_f, 0.6*scale_f, 0.1*scale_f), col="#89FF3C", type="l", lwd="3")
+            lines(0:scale_f, dnorm(0:scale_f, 0.7*scale_f, 0.1*scale_f), col="#C0FF98", type="l", lwd="3")
+            
+            plot(0:scale_f, dnorm(0:scale_f, 0.5*scale_f, 0.02*scale_f), col="#d698ff", type="l", lwd="3",
+                 ylab="probabilitatea", xlab="valoarea variabilei aleatoare", main="Densitatea normalei cu deviatia standard variabila")
+            lines(0:scale_f, dnorm(0:scale_f, 0.5*scale_f, 0.03*scale_f), col="#b23cff", type="l", lwd="3")
+            lines(0:scale_f, dnorm(0:scale_f, 0.5*scale_f, 0.04*scale_f), col="#8b00e6", type="l", lwd="3")
+            lines(0:scale_f, dnorm(0:scale_f, 0.5*scale_f, 0.07*scale_f), col="#60009f", type="l", lwd="3")
+            lines(0:scale_f, dnorm(0:scale_f, 0.5*scale_f, 0.13*scale_f), col="#2b0047", type="l", lwd="3")
+            
+            plot(0:scale_f, pnorm(0:scale_f, 0.2*scale_f, 0.1*scale_f), col="#1C4700", type="l", lwd="3",
+                 ylab="probabilitatea", xlab="valoarea variabilei aleatoare", main="Repartitia normalei cu media variabila")
+            lines(0:scale_f, pnorm(0:scale_f, 0.35*scale_f, 0.1*scale_f), col="#3F9F00", type="l", lwd="3")
+            lines(0:scale_f, pnorm(0:scale_f, 0.5*scale_f, 0.1*scale_f), col="#5be600", type="l", lwd="3")
+            lines(0:scale_f, pnorm(0:scale_f, 0.65*scale_f, 0.1*scale_f), col="#89FF3C", type="l", lwd="3")
+            lines(0:scale_f, pnorm(0:scale_f, 0.8*scale_f, 0.1*scale_f), col="#C0FF98", type="l", lwd="3")
+            
+            plot(0:scale_f, pnorm(0:scale_f, 0.5*scale_f, 0.02*scale_f), col="#d698ff", type="l", lwd="3",
+                 ylab="probabilitatea", xlab="valoarea variabilei aleatoare", main="Repartitia normalei cu deviatia standard variabila")
+            lines(0:scale_f, pnorm(0:scale_f, 0.5*scale_f, 0.05*scale_f), col="#b23cff", type="l", lwd="3")
+            lines(0:scale_f, pnorm(0:scale_f, 0.5*scale_f, 0.1*scale_f), col="#8b00e6", type="l", lwd="3")
+            lines(0:scale_f, pnorm(0:scale_f, 0.5*scale_f, 0.2*scale_f), col="#60009f", type="l", lwd="3")
+            lines(0:scale_f, pnorm(0:scale_f, 0.5*scale_f, 0.4*scale_f), col="#2b0047", type="l", lwd="3")
+            return()
+        }
+        par(mfrow=c(1,2))
+      
+        plot(0:scale_f, dnorm(0:scale_f, param_1, param_2), col="#5be600", type="l", lwd="3", 
+             ylab="probabilitatea", xlab="valoarea variabilei aleatoare", main="Densitatea normalei cu valorile alese")
+        plot(0:scale_f, pnorm(0:scale_f, param_1, param_2), col="#8b00e6", type="l", lwd="3",
+             ylab="probabilitatea", xlab="valoarea variabilei aleatoare", main="Repartitia normalei cu valorile alese")
+        return()
+    }
+    
+    #distributia geometrica
+    if(index_f == 3){
+        if(param_1 == -1){
+            par(mfrow=c(1,2))
+            
+            cat("Pentru o afisare mai concreta introduceti valori pentru ambii parametrii cat si pentru scala")
+            plot(0:scale_f, dgeom(0:scale_f, 0.09), col="#1C4700", type="l", lwd="3", 
+                 ylab="probabilitatea", xlab="numarul de incercari", main="Densitatea geometricei cu numarul de incercari variabil")
+            lines(0:scale_f, dgeom(0:scale_f, 0.2), col="#3F9F00", type="l", lwd="3")
+            lines(0:scale_f, dgeom(0:scale_f, 0.35), col="#5be600", type="l", lwd="3")
+            lines(0:scale_f, dgeom(0:scale_f, 0.5), col="#89FF3C", type="l", lwd="3")
+            lines(0:scale_f, dgeom(0:scale_f, 0.7), col="#C0FF98", type="l", lwd="3")
+            
+            plot(0:scale_f, pgeom(0:scale_f, 0.09), col="#d698ff", type="l", lwd="3",
+                 ylab="probabilitatea", xlab="numarul de incercari", main="Repartitia geometricei cu probabilitatea de success variabila")
+            lines(0:scale_f, pgeom(0:scale_f, 0.2), col="#b23cff", type="l", lwd="3")
+            lines(0:scale_f, pgeom(0:scale_f, 0.35), col="#8b00e6", type="l", lwd="3")
+            lines(0:scale_f, pgeom(0:scale_f, 0.5), col="#60009f", type="l", lwd="3")
+            lines(0:scale_f, pgeom(0:scale_f, 0.7), col="#2b0047", type="l", lwd="3")
+            return()
+        }
+        par(mfrow=c(1,2))
+        
+        plot(0:scale_f, dgeom(0:scale_f, param_1), col="#5be600", type="l", lwd="3", 
+             ylab="probabilitatea", xlab="numarul de incercari", main="Densitatea geometricei cu numarul de incercari variabil")
+        plot(0:scale_f, pgeom(0:scale_f, param_1), col="#8b00e6", type="l", lwd="3",
+             ylab="probabilitatea", xlab="numarul de incercari", main="Densitatea geometricei cu probabilitatea de success variabila")
+        
         return()
     }
 }
+
+reprezentare_grafica(3)
+reprezentare_grafica(3, 100, 0.4)
+
 reprezentare_grafica(1)
+reprezentare_grafica(1, 100, 100, 0.5)
+reprezentare_grafica(2)
+reprezentare_grafica(2, 100, 50, 10)
+dgeom(0:100, 0.4)
+plot(0:100, pgeom(0:100, 0.4), col="#d698ff", type="l", lwd="3")
+     
 
 
 
