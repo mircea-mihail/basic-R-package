@@ -50,13 +50,14 @@ typeof(a)
 # ok cu min si max
 # undeva cand am relatia cu utilizatorul sa fie clar ca o constanta duce la
 
+#incearca sa integreze funcita si intoarce NA daca nu se poate sau rezultatul integrarii daca da
 integreaza_finit <- function(f, min, max){
     rez_integrarii <- tryCatch(
         integrate(f, min, max), 
         error = function(err){
             # daca integrala tinde la infinit, mesajul erorii este cel de mai jos
             if(err$message == "non-finite function value"){
-                cat("Functia data tinde la infinit.\nNu se poate gasi o constanta de normalizare pentru ea.\n")
+                cat("Functia data tinde la infinit.\n")
             }
             else{
                 cat("O eroare neasteptata a avut loc la integrare:\n")
@@ -87,8 +88,12 @@ verifica_functie_discreta <- function(x, min, max){
         )
         
         if(is.na(sum)){
-            cat("Functia introdusa nu este valida")
+            cat("Functia introdusa nu este valida\n")
             return(1);
+        }
+        if(typeof(x) == "logical"){
+          cat("Tipul functiei introduse este invalid: logical\n")
+          return(1)
         }
         return(2)
     }
@@ -98,6 +103,7 @@ verifica_functie_discreta <- function(x, min, max){
 # daca functia e continua obtin o densitate
 # pot da un cat sa zic daca e densitate
 # nu orice functie poate fi densitate: definita in R cu val in R, sa 
+# constanta de normalizare se realizeaza cu ajutorul probabilitatilor fiecarei functie -> suma lor sa fie 1
 obtine_constanta_normalizare <- function(f, min = 0, max = 0){
     # Aceasta metoda de obtinere a constantei de normalizare poate ajunge la rezultatul corect, 
     # fie ca functia f are valori discrete (functie de masa) ( acestea fiind reprezentate de felul ifelse(x < 1, 1, 2)
@@ -105,7 +111,7 @@ obtine_constanta_normalizare <- function(f, min = 0, max = 0){
     # min si max reprezinta intervalul pe care functia ia valori diferite de 0
     
     # verific daca f e functie continua sau concreta
-    status_functie <- verifica_functie_discreta(f, min, max);
+    status_functie <- verifica_functie_discreta(f, min, max)
     
     if(status_functie == 2){
         sum <- sum(f)
@@ -209,32 +215,45 @@ sum(f_masa)
 # exista repartitii care nu au medie -> nu vor avea si momente
 # pot avea integrale sau sume -> daca integrala e divergenta sa zica nu exista etc..
 
-x <- c(1, 2, 3, 10)
 
-medie_dispersie_momente <- function(x, min = 0, max = 0){
+
+x <- list(c(0.3, 0.2, 0.1, 0.4), c(1, 2, 3, 10))
+array(unlist(x[1], length(x[1])))
+a <- array(unlist(x[1], length(x[1]))) * array(unlist(x[2], length(x[2])))
+
+# f pentru variabila aleatoare discreta este produsul probabilitate-valoare ca mai sus
+medie_dispersie_momente <- function(f, min = 0, max = 0){
+    if(typeof(f) == "list"){
+        cat("Introduceti o functie continua sau un vector. Listele nu se accepta.\n")
+        return(NA)
+    }
     #daca f este o functie discreta 
+    status_functie <- verifica_functie_discreta(f, min, max)
+    if(status_functie == 1){
+        return(NA)
+    }
     
-      
+    if(status_functie == 2){
         # media aritmetica
-        media <- mean(x)
+        media <- mean(f)
         # dispersia, sau varianta, se obtine adunand diferenta dintre fiecare valoare
         # si medie la patrat. Suma respectiva se imparte la numarul de valori - 1
         # (ajustarea lui Bessel, care are drept scop corectarea unui bias)
-        dispersia <- var(x)
+        dispersia <- var(f)
         
         # media este chiar primul moment 
         # acest prim moment totusi poate coincide cu multe alte dataseturi
-        # un al doilea moment este suma patratelor lui x supra n (nr de valori din x)
-        momentul_2 <- sum(x^2) / length(x)
-        momentul_3 <- sum(x^3) / length(x)
-        momentul_4 <- sum(x^4) / length(x)
+        # un al doilea moment este suma patratelor lui f supra n (nr de valori din f)
+        momentul_2 <- sum(f^2) / length(f)
+        momentul_3 <- sum(f^3) / length(f)
+        momentul_4 <- sum(f^4) / length(f)
         # cu cat varianta e mai mare cu atat momentele 2, 3, 4 vor fi mai mari
         
         # scopul momentelor centrate este sa elimine la fiecare pas momentul precedent 
         
-        momentul_2_centrat <- sum((x - media)^2) / length(x)
-        momentul_3_centrat <- sum((x - media)^3) / length(x)
-        momentul_4_centrat <- sum((x - media)^4) / length(x)
+        momentul_2_c <- sum((f - media)^2) / length(f)
+        momentul_3_c <- sum((f - media)^3) / length(f)
+        momentul_4_c <- sum((f - media)^4) / length(f)
       
         return(list(media = media, 
                     dispersia = dispersia, 
@@ -244,17 +263,111 @@ medie_dispersie_momente <- function(x, min = 0, max = 0){
                     momentul_3 = momentul_3,
                     momentul_4 = momentul_4,
                     
-                    momentul_2_centrat = momentul_2_centrat,
-                    momentul_3_centrat = momentul_3_centrat,
-                    momentul_4_centrat = momentul_4_centrat
+                    momentul_2_centrat = momentul_2_c,
+                    momentul_3_centrat = momentul_3_c,
+                    momentul_4_centrat = momentul_4_c
                     
-                    ))
+                    )
+               )
     }
     #daca nu e discreta nu intra pe if si daca este iese din functie la return 
+    if(min > max){
+        cat("Limita inferioara este mai mare decat cea superioara!\n")
+        cat("Introduceti un interval valid, in care limitele pe care functia ia valori au sens.\n")
+        return(NA)
+    }
     
-    media <- integreaza_finit(x, min, max)
+    if(min == max){
+        if(min == 0){
+            cat("Nu ati introdus limite!\n")
+            cat("Introduceti un interval pe care functia ia valori.\n")
+            return(NA)
+        }
+        #daca intervalul este 0, orice constanta inmultita cu 0 va da mereu 0
+        cat("Limitele au aceeasi valoare!\n")
+        cat("Introduceti un interval valid, in care limitele pe care functia ia valori au sens.\n")
+        return(NA)
+    }
+    
+    if(typeof(integreaza_finit(f, min, max)) == "logical"){
+        return(NA)
+    }
+    
+    m1_func <- function(x){
+        x * f(x)
+    }
+    m2_func <- function(x){
+        x^2 * f(x)
+    }
+    m3_func <- function(x){
+        x^3 * f(x)
+    }
+    m4_func <- function(x){
+        x^4 * f(x)
+    }
+    media      <- if(typeof(integreaza_finit(m1_func, min, max)) != "logical") integreaza_finit(m1_func, min, max)$value else NA
+    momentul_1 <- if(typeof(integreaza_finit(m1_func, min, max)) != "logical") integreaza_finit(m1_func, min, max)$value else NA
+    momentul_2 <- if(typeof(integreaza_finit(m2_func, min, max)) != "logical") integreaza_finit(m2_func, min, max)$value else NA
+    momentul_3 <- if(typeof(integreaza_finit(m3_func, min, max)) != "logical") integreaza_finit(m3_func, min, max)$value else NA
+    momentul_4 <- if(typeof(integreaza_finit(m4_func, min, max)) != "logical") integreaza_finit(m4_func, min, max)$value else NA
+    
+    m1_c_func <- function(x){
+        (x-media) * f(x)
+    }
+    m2_c_func <- function(x){
+        (x-media)^2 * f(x)
+    }
+    m3_c_func <- function(x){
+        (x-media)^3 * f(x)
+    }
+    m4_c_func <- function(x){
+        (x-media)^4 * f(x)
+    }
+    momentul_2_c <- if(typeof(integreaza_finit(m2_c_func, min, max)) != "logical") integreaza_finit(m2_c_func, min, max)$value else NA
+    momentul_3_c <- if(typeof(integreaza_finit(m3_c_func, min, max)) != "logical") integreaza_finit(m3_c_func, min, max)$value else NA
+    momentul_4_c <- if(typeof(integreaza_finit(m4_c_func, min, max)) != "logical") integreaza_finit(m4_c_func, min, max)$value else NA
+    
+    #varianta sau dispersia e chiar al doilea moment centrat
+    dispersia <- momentul_2_c
+    
+    return(list(media = media, 
+                dispersia = dispersia, 
+                
+                momentul_1 = momentul_1,
+                momentul_2 = momentul_2,
+                momentul_3 = momentul_3,
+                momentul_4 = momentul_4,
+                
+                momentul_2_centrat = momentul_2_c,
+                momentul_3_centrat = momentul_3_c,
+                momentul_4_centrat = momentul_4_c
+                
+    ))
 }
 
-a <- medie_dispersie_momente(x)
+f <- function(x){
+  x*x*3/8
+}
+
+medie_dispersie_momente(f, 0, 2)
+
+
+k <- obtine_constanta_normalizare(f, 0, 2)
+
+f1 <- function(x){
+    k * f(x)
+}
+
+integreaza_finit(f1, 0, 2)$value
+
+f1_media <- function(x){
+    return(x * f1(x))
+}
+
+integreaza_finit(f1_media, 0, 2)$value
+
+
+
+a <- medie_dispersie_momente(inf_f, 0, 0)
 
 
