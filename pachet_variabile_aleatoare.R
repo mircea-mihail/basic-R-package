@@ -218,10 +218,11 @@ sum(f_masa)
 #daca se dau inputuri pt fiecare parametru se fac doar 2 plotari pt cele 2 functii cerute(Dens si rep)
 reprezentare_grafica <- function(index_f=0, scale_f = 100, param_1 = -1, param_2 = -1){
     if(index_f == 0){
-        cat( "utilizare:\n1 - functia binomiala\n2 - \n")
+        cat("repartitii implementate:\n1 - repartitia binomiala\n2 - repartitia normala\n3 - repartitia geometrica\n")
+        cat("4 - repartitia exponentiala\n")
         return()
     }
-    #distributia binomiala -> pot fi modificate numarul de incercari si probabilitatea de success
+    #repartitia binomiala -> pot fi modificate numarul de incercari si probabilitatea de success
     if(index_f == 1){
         if(param_1 == -1 || param_2 == -1){
             par(mfrow=c(2,2))
@@ -266,7 +267,7 @@ reprezentare_grafica <- function(index_f=0, scale_f = 100, param_1 = -1, param_2
         return()
     }
 
-    #distributia normala -> pot fi modificate media si deviatia standard
+    #repartitia normala -> pot fi modificate media si deviatia standard
     if(index_f == 2){
         if(param_1 == -1 || param_2 == -1){
             par(mfrow=c(2,2))
@@ -310,14 +311,14 @@ reprezentare_grafica <- function(index_f=0, scale_f = 100, param_1 = -1, param_2
         return()
     }
     
-    #distributia geometrica
+    #repartitia geometrica
     if(index_f == 3){
         if(param_1 == -1){
             par(mfrow=c(1,2))
             
             cat("Pentru o afisare mai concreta introduceti valori pentru ambii parametrii cat si pentru scala")
             plot(0:scale_f, dgeom(0:scale_f, 0.09), col="#1C4700", type="l", lwd="3", 
-                 ylab="probabilitatea", xlab="numarul de incercari", main="Densitatea geometricei cu numarul de incercari variabil")
+                 ylab="probabilitatea", xlab="numarul de incercari", main="Densitatea geometricei cu probabilitatea de success variabila")
             lines(0:scale_f, dgeom(0:scale_f, 0.2), col="#3F9F00", type="l", lwd="3")
             lines(0:scale_f, dgeom(0:scale_f, 0.35), col="#5be600", type="l", lwd="3")
             lines(0:scale_f, dgeom(0:scale_f, 0.5), col="#89FF3C", type="l", lwd="3")
@@ -334,22 +335,98 @@ reprezentare_grafica <- function(index_f=0, scale_f = 100, param_1 = -1, param_2
         par(mfrow=c(1,2))
         
         plot(0:scale_f, dgeom(0:scale_f, param_1), col="#5be600", type="l", lwd="3", 
-             ylab="probabilitatea", xlab="numarul de incercari", main="Densitatea geometricei cu numarul de incercari variabil")
+             ylab="probabilitatea", xlab="numarul de incercari", main="Densitatea geometricei cu valorile alese")
         plot(0:scale_f, pgeom(0:scale_f, param_1), col="#8b00e6", type="l", lwd="3",
-             ylab="probabilitatea", xlab="numarul de incercari", main="Densitatea geometricei cu probabilitatea de success variabila")
+             ylab="probabilitatea", xlab="numarul de incercari", main="Repartitia geometricei cu valorile alese")
+        
+        return()
+    }
+  
+    #repartitia exponentiala
+    if(index_f == 4){
+        if(param_1 == -1){
+            par(mfrow=c(1,2))
+            
+            cat("Pentru o afisare mai concreta introduceti valori pentru ambii parametrii cat si pentru scala")
+            plot(0:scale_f, dexp(0:scale_f, 0.09), col="#1C4700", type="l", lwd="3", 
+                 ylab="probabilitatea", xlab="numarul de incercari", main="Densitatea exponentialei cu probabilitatea de success variabila")
+            lines(0:scale_f, dexp(0:scale_f, 0.2), col="#3F9F00", type="l", lwd="3")
+            lines(0:scale_f, dexp(0:scale_f, 0.35), col="#5be600", type="l", lwd="3")
+            lines(0:scale_f, dexp(0:scale_f, 0.5), col="#89FF3C", type="l", lwd="3")
+            lines(0:scale_f, dexp(0:scale_f, 0.7), col="#C0FF98", type="l", lwd="3")
+            
+            plot(0:scale_f, pexp(0:scale_f, 0.09), col="#d698ff", type="l", lwd="3",
+                 ylab="probabilitatea", xlab="numarul de incercari", main="Repartitia exponentialei cu probabilitatea de success variabila")
+            lines(0:scale_f, pexp(0:scale_f, 0.2), col="#b23cff", type="l", lwd="3")
+            lines(0:scale_f, pexp(0:scale_f, 0.35), col="#8b00e6", type="l", lwd="3")
+            lines(0:scale_f, pexp(0:scale_f, 0.5), col="#60009f", type="l", lwd="3")
+            lines(0:scale_f, pexp(0:scale_f, 0.7), col="#2b0047", type="l", lwd="3")
+            return()
+        }
+        par(mfrow=c(1,2))
+        
+        plot(0:scale_f, dexp(0:scale_f, param_1), col="#5be600", type="l", lwd="3", 
+             ylab="probabilitatea", xlab="numarul de incercari", main="Densitatea exponentialei cu valorile alese")
+        plot(0:scale_f, pexp(0:scale_f, param_1), col="#8b00e6", type="l", lwd="3",
+             ylab="probabilitatea", xlab="numarul de incercari", main="Repartitia exponentialei cu valorile alese")
+        
+        return()
+    }
+  
+    #repartitia uniforma
+    if(index_f == 5){
+        if(param_1 == -1 || param_2 == -1){
+            par(mfrow=c(2,2))
+            
+            cat("Pentru o afisare mai concreta introduceti valori pentru ambii parametrii cat si pentru scala")
+            plot(0:scale_f, dunif(0:scale_f, 0.1*scale_f, 0.2*scale_f), col="#1C4700", type="l", lwd="3", 
+                 ylab="probabilitatea", xlab="numarul de incercari", main="Densitatea binomialei cu minimul si maximul schimbate")
+            lines(0:scale_f, dunif(0:scale_f, 0*scale_f, 0.3*scale_f), col="#3F9F00", type="l", lwd="3")
+            lines(0:scale_f, dunif(0:scale_f, 0.2*scale_f, 0.6*scale_f), col="#5be600", type="l", lwd="3")
+            lines(0:scale_f, dunif(0:scale_f, 0.8*scale_f, 0.9*scale_f), col="#89FF3C", type="l", lwd="3")
+            lines(0:scale_f, dunif(0:scale_f, 0*scale_f, 1*scale_f), col="#C0FF98", type="l", lwd="3")
+            
+            plot(0:scale_f, punif(0:scale_f, 0.1*scale_f, 0.2*scale_f), col="#d698ff", type="l", lwd="3", 
+                 ylab="probabilitatea", xlab="numarul de incercari", main="Densitatea binomialei cu minimul si maximul schimbate")
+            lines(0:scale_f, punif(0:scale_f, 0*scale_f, 0.3*scale_f), col="#b23cff", type="l", lwd="3")
+            lines(0:scale_f, punif(0:scale_f, 0.2*scale_f, 0.6*scale_f), col="#8b00e6", type="l", lwd="3")
+            lines(0:scale_f, punif(0:scale_f, 0.8*scale_f, 0.9*scale_f), col="#60009f", type="l", lwd="3")
+            lines(0:scale_f, punif(0:scale_f, 0*scale_f, 1*scale_f), col="#2b0047", type="l", lwd="3")
+            
+            return()
+        }
+        par(mfrow=c(1,2))
+        
+        plot(0:scale_f, dbinom(0:scale_f, param_1, param_2), col="#5be600", type="l", lwd="3", 
+             ylab="probabilitatea", xlab="numarul de incercari", main="Binomiala cu valorile alese")
+        plot(0:scale_f, pbinom(0:scale_f, scale_f, 0.1), col="#8b00e6", type="l", lwd="3",
+             ylab="probabilitatea", xlab="numarul de incercari", main="Repartitia binomialei cu valorile alese")
         
         return()
     }
 }
 
+reprezentare_grafica(5)
+reprezentare_grafica(4, 100, 0.4)
+
+reprezentare_grafica(4)
+reprezentare_grafica(4, 100, 0.4)
+
 reprezentare_grafica(3)
 reprezentare_grafica(3, 100, 0.4)
-
 reprezentare_grafica(1)
 reprezentare_grafica(1, 100, 100, 0.5)
 reprezentare_grafica(2)
 reprezentare_grafica(2, 100, 50, 10)
-dgeom(0:100, 0.4)
+
+par = (mfrow=c(1,1))
+dunif(1:10, 0, 5)
+plot(1:10, punif(1:10, 3, 5), col="red", type="l", lwd="3")
+lines(0:100, dexp(0:100, 0.4), col="green", type="l", lwd="3")
+          
+
+
+
 plot(0:100, pgeom(0:100, 0.4), col="#d698ff", type="l", lwd="3")
      
 
